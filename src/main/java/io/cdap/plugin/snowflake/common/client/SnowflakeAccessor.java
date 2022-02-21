@@ -26,6 +26,7 @@ import io.cdap.plugin.snowflake.common.util.QueryUtil;
 import net.snowflake.client.jdbc.SnowflakeBasicDataSource;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.xml.transform.Result;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -60,6 +61,17 @@ public class SnowflakeAccessor {
     try (Connection connection = dataSource.getConnection();
          PreparedStatement populateStmt = connection.prepareStatement(query);) {
       populateStmt.execute();
+    } catch (SQLException e) {
+      throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
+    }
+
+  }
+
+  public ResultSet runSQLWithResult(String query) throws IOException {
+    PreparedStatement populateStmt;
+    try (Connection connection = dataSource.getConnection()) {
+      populateStmt = connection.prepareStatement(query);
+      return populateStmt.executeQuery();
     } catch (SQLException e) {
       throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
     }
