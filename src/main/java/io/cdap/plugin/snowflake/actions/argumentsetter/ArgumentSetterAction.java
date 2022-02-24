@@ -16,21 +16,37 @@
 
 package io.cdap.plugin.snowflake.actions.argumentsetter;
 
+import com.google.common.base.Strings;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.annotation.Plugin;
+import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.StageConfigurer;
 import io.cdap.cdap.etl.api.action.Action;
 import io.cdap.cdap.etl.api.action.ActionContext;
+import io.cdap.plugin.common.KeyValueListParser;
+import io.cdap.plugin.snowflake.common.BaseSnowflakeConfig;
+import io.cdap.plugin.snowflake.common.OAuthUtil;
 import io.cdap.plugin.snowflake.common.client.SnowflakeAccessor;
+import net.snowflake.client.jdbc.SnowflakeBasicDataSource;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Runs an arbitrary SQL query on Snowflake.
@@ -54,28 +70,62 @@ public class ArgumentSetterAction extends Action {
     collector.getOrThrowException();
 
     SnowflakeAccessor snowflakeAccessor = new SnowflakeAccessor(config);
-    ResultSet resultSet = snowflakeAccessor.runSQLWithResult(config.getQuery());
+    SnowflakeBasicDataSource dataSource = snowflakeAccessor.getDataSource();
 
-    Map<String, String> argumentsMap = new HashMap<>();
+    PreparedStatement populateStmt = null;
+    Connection connection =  dataSource.getConnection();
+    ResultSet resultSet = null;
+    String query = config.getQuery();
+    try {
+      populateStmt = connection.prepareStatement(query);
+      resultSet = populateStmt.executeQuery();
 
-    int count = 0;
-    if (resultSet.next()) {
-      count++;
+      Map<String, String> argumentsMap = new HashMap<>();
 
-      int columnCount = resultSet.getMetaData().getColumnCount();
-      for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-        argumentsMap.put(resultSet.getMetaData().getColumnName(i), resultSet.getString(i));
+      int count = 0;
+      if (resultSet.next()) {
+        count++;
+
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        LOG.trace("Number of columns: " + columnCount);
+        if (columnCount < 1) {
+          throw new RuntimeException("No columns in result");
+        }
+        for (int i = 1; i <= columnCount; i++) {
+          String columnLabel = resultSet.getMetaData().getColumnLabel(i);
+          if (columnLabel == null || columnLabel.equalsIgnoreCase("")) {
+            throw new RuntimeException("No column name returned");
+          }
+          LOG.debug("Column Label: " + columnLabel);
+          String value = resultSet.getString(i);
+          if (value == null) {
+            throw new RuntimeException(String.format("No value was returned for column %s", columnLabel));
+          }
+          argumentsMap.put(columnLabel, value);
+        }
       }
-    }
-    if (count == 0) {
-      throw new RuntimeException(String.format("The query result total rows should be \"1\" but is \"%d\"", count));
-    }
-    if (resultSet.next()) {
-      throw new RuntimeException(String.format("The query result total rows should be \"1\" but is larger than \"1\""));
-    }
+      if (count == 0) {
+        throw new RuntimeException(String.format("The query result total rows should be \"1\" but is \"%d\"", count));
+      }
+      if (resultSet.next()) {
+        throw new RuntimeException(String.format("The query result total rows should be \"1\" but is larger than \"1\""));
+      }
 
-    for (Map.Entry<String, String> argument : argumentsMap.entrySet()) {
-      context.getArguments().set(argument.getKey(), argument.getValue());
+      for (Map.Entry<String, String> argument : argumentsMap.entrySet()) {
+        context.getArguments().set(argument.getKey(), argument.getValue());
+      }
+    } catch (SQLException e) {
+      throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
+    } finally {
+      if (!resultSet.isClosed()) {
+        resultSet.close();
+      }
+      if (!populateStmt.isClosed()) {
+        populateStmt.close();
+      }
+      if (!connection.isClosed()) {
+        connection.close();
+      }
     }
   }
 

@@ -75,7 +75,6 @@ public class SnowflakeAccessor {
     } catch (SQLException e) {
       throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
     }
-
   }
 
   /**
@@ -153,6 +152,11 @@ public class SnowflakeAccessor {
       throw new ConnectionTimeoutException("Cannot create Snowflake connection.", e);
     }
   }
+
+  public SnowflakeBasicDataSource getDataSource() {
+    return this.dataSource;
+  }
+
   // SnowflakeBasicDataSource doesn't provide access for additional properties.
   private void addConnectionArguments(SnowflakeBasicDataSource dataSource, String connectionArguments) {
     try {
