@@ -16,37 +16,26 @@
 
 package io.cdap.plugin.snowflake.actions.argumentsetter;
 
-import com.google.common.base.Strings;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.annotation.Plugin;
-import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.StageConfigurer;
 import io.cdap.cdap.etl.api.action.Action;
 import io.cdap.cdap.etl.api.action.ActionContext;
-import io.cdap.plugin.common.KeyValueListParser;
-import io.cdap.plugin.snowflake.common.BaseSnowflakeConfig;
-import io.cdap.plugin.snowflake.common.OAuthUtil;
 import io.cdap.plugin.snowflake.common.client.SnowflakeAccessor;
 import net.snowflake.client.jdbc.SnowflakeBasicDataSource;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Runs an arbitrary SQL query on Snowflake.
@@ -54,12 +43,12 @@ import java.util.Properties;
 @Plugin(type = Action.PLUGIN_TYPE)
 @Name("SnowflakeSQLArgumentSetter")
 @Description("Sets runtime arguments from an arbitrary SQL query on Snowflake.")
-public class ArgumentSetterAction extends Action {
-  private static final Logger LOG = LoggerFactory.getLogger(ArgumentSetterAction.class);
+public class SnowflakeSQLArgumentSetterAction extends Action {
+  private static final Logger LOG = LoggerFactory.getLogger(SnowflakeSQLArgumentSetterAction.class);
 
-  private final ArgumentSetterConfig config;
+  private final SnowflakeSQLArgumentSetterConfig config;
 
-  public ArgumentSetterAction(ArgumentSetterConfig config) {
+  public SnowflakeSQLArgumentSetterAction(SnowflakeSQLArgumentSetterConfig config) {
     this.config = config;
   }
 

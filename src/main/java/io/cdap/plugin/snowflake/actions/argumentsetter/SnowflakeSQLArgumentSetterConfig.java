@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 /**
  * Config for {@ArgumentSetterAction}
  */
-public class ArgumentSetterConfig extends BaseSnowflakeConfig {
+public class SnowflakeSQLArgumentSetterConfig extends BaseSnowflakeConfig {
   public static final String PROPERTY_QUERY = "query";
 
   @Name(PROPERTY_QUERY)
@@ -34,10 +34,10 @@ public class ArgumentSetterConfig extends BaseSnowflakeConfig {
   @Macro
   private String query;
 
-  public ArgumentSetterConfig(String accountName, String database, String schemaName, String username, String password,
-                      @Nullable Boolean keyPairEnabled, @Nullable String path, @Nullable String passphrase,
-                      @Nullable Boolean oauth2Enabled, @Nullable String clientId, @Nullable String clientSecret,
-                      @Nullable String refreshToken, @Nullable String connectionArguments) {
+  public SnowflakeSQLArgumentSetterConfig(String accountName, String database, String schemaName, String username, String password,
+                                          @Nullable Boolean keyPairEnabled, @Nullable String path, @Nullable String passphrase,
+                                          @Nullable Boolean oauth2Enabled, @Nullable String clientId, @Nullable String clientSecret,
+                                          @Nullable String refreshToken, @Nullable String connectionArguments) {
     super(accountName, database, schemaName, username, password, keyPairEnabled, path, passphrase, oauth2Enabled,
           clientId, clientSecret, refreshToken, connectionArguments);
   }
