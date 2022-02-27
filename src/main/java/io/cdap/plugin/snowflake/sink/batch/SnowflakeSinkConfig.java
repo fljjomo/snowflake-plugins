@@ -20,6 +20,7 @@ import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
+import io.cdap.plugin.common.IdUtils;
 import io.cdap.plugin.snowflake.common.BaseSnowflakeConfig;
 import io.cdap.plugin.snowflake.common.client.SnowflakeAccessor;
 import io.cdap.plugin.snowflake.common.util.SchemaHelper;
@@ -86,6 +87,8 @@ public class SnowflakeSinkConfig extends BaseSnowflakeConfig {
   }
 
   public void validate(Schema inputSchema, FailureCollector failureCollector) {
+    IdUtils.validateReferenceName(referenceName, failureCollector);
+
     super.validate(failureCollector);
     validateInputSchema(inputSchema, failureCollector);
   }
