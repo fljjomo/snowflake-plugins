@@ -97,7 +97,8 @@ public class SnowflakeSQLArgumentSetterAction extends Action {
         throw new RuntimeException(String.format("The query result total rows should be \"1\" but is \"%d\"", count));
       }
       if (resultSet.next()) {
-        throw new RuntimeException(String.format("The query result total rows should be \"1\" but is larger than \"1\""));
+        throw new RuntimeException(String.format(
+                "The query result total rows should be \"1\" but is larger than \"1\""));
       }
 
       for (Map.Entry<String, String> argument : argumentsMap.entrySet()) {

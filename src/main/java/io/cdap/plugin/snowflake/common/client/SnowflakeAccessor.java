@@ -26,7 +26,6 @@ import io.cdap.plugin.snowflake.common.util.QueryUtil;
 import net.snowflake.client.jdbc.SnowflakeBasicDataSource;
 import org.apache.http.impl.client.HttpClients;
 
-import javax.xml.transform.Result;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
