@@ -14,7 +14,7 @@
  * the License.
  */
 
-package io.cdap.plugin.snowflake.source.batch;
+package io.cdap.plugin.snowflake.batch.sink;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

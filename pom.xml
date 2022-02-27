@@ -34,7 +34,7 @@
     <commons.csv.version>1.6</commons.csv.version>
     <hadoop.version>2.8.0</hadoop.version>
     <spark2.version>2.3.1</spark2.version>
-    <netty.version>4.1.16.Final</netty.version>
+    <netty.version>4.1.72.Final</netty.version>
     <netty-http.version>1.3.0</netty-http.version>
     <httpcomponents.version>4.5.9</httpcomponents.version>
     <guava.retrying.version>2.0.0</guava.retrying.version>
@@ -44,7 +44,7 @@
     <awaitility.version>3.1.6</awaitility.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.10.19</mockito.version>
-    <powermock.version>1.7.4</powermock.version>
+    <powermock.version>2.0.9</powermock.version>
     <guice.version>4.0</guice.version>
     <opencsv.version>2.4</opencsv.version>
     <snowflake-jdbc.version>3.13.14</snowflake-jdbc.version>
@@ -337,38 +337,26 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Start: Testing dependencies -->
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito.version}</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
       <version>${powermock.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.powermock</groupId>
-          <artifactId>powermock-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.powermock</groupId>
-          <artifactId>powermock-reflect</artifactId>
-        </exclusion>
-      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
+      <artifactId>powermock-api-mockito2</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- End: Testing dependencies -->
     <dependency>
       <groupId>io.cdap.cdap</groupId>
       <artifactId>hydrator-test</artifactId>
