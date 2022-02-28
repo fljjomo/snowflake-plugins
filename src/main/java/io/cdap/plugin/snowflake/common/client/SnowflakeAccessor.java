@@ -135,6 +135,7 @@ public class SnowflakeAccessor {
    * of exception would be generated {@link ConnectionTimeoutException}
    */
   public void checkConnection() {
+    // TODO: this is where the null pointer exception is thrown when macros are used
     try (Connection connection = dataSource.getConnection()) {
       connection.getMetaData();
     } catch (SQLException e) {
