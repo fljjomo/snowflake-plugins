@@ -66,6 +66,16 @@ public class SnowflakeAccessor {
 
   }
 
+  public ResultSet runSQLWithResult(String query) throws IOException {
+    PreparedStatement populateStmt;
+    try (Connection connection = dataSource.getConnection()) {
+      populateStmt = connection.prepareStatement(query);
+      return populateStmt.executeQuery();
+    } catch (SQLException e) {
+      throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
+    }
+  }
+
   /**
    * Returns field descriptors for specified import query.
    *
@@ -142,6 +152,11 @@ public class SnowflakeAccessor {
       throw new ConnectionTimeoutException("Cannot create Snowflake connection.", e);
     }
   }
+
+  public SnowflakeBasicDataSource getDataSource() {
+    return this.dataSource;
+  }
+
   // SnowflakeBasicDataSource doesn't provide access for additional properties.
   private void addConnectionArguments(SnowflakeBasicDataSource dataSource, String connectionArguments) {
     try {
