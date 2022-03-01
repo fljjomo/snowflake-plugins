@@ -32,59 +32,59 @@ import javax.annotation.Nullable;
  * Common configurations for Snowflake source and sink
  */
 public class BaseSnowflakeConfig extends PluginConfig {
-  public static final String PROPERTY_ACCOUNT_NAME = "accountName";
-  public static final String PROPERTY_DATABASE = "database";
-  public static final String PROPERTY_SCHEMA_NAME = "schemaName";
-  public static final String PROPERTY_WAREHOUSE = "warehouse";
+  public static final String NAME_ACCOUNT_NAME = "accountName";
+  public static final String NAME_DATABASE = "database";
+  public static final String NAME_SCHEMA_NAME = "schemaName";
+  public static final String NAME_WAREHOUSE = "warehouse";
   public static final String PROPERTY_ROLE = "role";
-  public static final String PROPERTY_USERNAME = "username";
+  public static final String NAME_USERNAME = "username";
   public static final String PROPERTY_PASSWORD = "password";
   public static final String PROPERTY_KEY_PAIR_ENABLED = "keyPairEnabled";
-  public static final String PROPERTY_PRIVATE_KEY = "privateKey";
-  public static final String PROPERTY_PASSPHRASE = "passphrase";
+  public static final String NAME_PRIVATE_KEY = "privateKey";
+  public static final String NAME_PASSPHRASE = "passphrase";
   public static final String PROPERTY_OAUTH_2_ENABLED = "oauth2Enabled";
   public static final String PROPERTY_CLIENT_ID = "clientId";
   public static final String PROPERTY_CLIENT_SECRET = "clientSecret";
   public static final String PROPERTY_REFRESH_TOKEN = "refreshToken";
   public static final String PROPERTY_CONNECTION_ARGUMENTS = "connectionArguments";
 
-  @Name(PROPERTY_ACCOUNT_NAME)
-  @Description("Full name of Snowflake account.")
+  @Name(NAME_ACCOUNT_NAME)
   @Macro
+  @Description("Full name of Snowflake account.")
   private String accountName;
 
-  @Name(PROPERTY_DATABASE)
+  @Name(NAME_DATABASE)
   @Description("Database name to connect to.")
   @Macro
   private String database;
 
-  @Name(PROPERTY_SCHEMA_NAME)
+  @Name(NAME_SCHEMA_NAME)
   @Description("Schema name to connect to.")
   @Macro
   private String schemaName;
 
-  @Nullable
-  @Name(PROPERTY_WAREHOUSE)
-  @Description("Warehouse to connect to. If not specified default warehouse is used.")
+  @Name(NAME_WAREHOUSE)
   @Macro
+  @Nullable
+  @Description("Warehouse to connect to. If not specified default warehouse is used.")
   private String warehouse;
 
-  @Nullable
   @Name(PROPERTY_ROLE)
-  @Description("Role to use. If not specified default role is used.")
   @Macro
+  @Nullable
+  @Description("Role to use. If not specified default role is used.")
   private String role;
 
-  @Name(PROPERTY_USERNAME)
-  @Description("User identity for connecting to the specified database.")
+  @Name(NAME_USERNAME)
   @Macro
   @Nullable
+  @Description("User identity for connecting to the specified database.")
   private String username;
 
   @Name(PROPERTY_PASSWORD)
-  @Description("Password to use to connect to the specified database.")
   @Macro
   @Nullable
+  @Description("Password to use to connect to the specified database.")
   private String password;
 
   @Name(PROPERTY_KEY_PAIR_ENABLED)
@@ -92,16 +92,16 @@ public class BaseSnowflakeConfig extends PluginConfig {
   @Nullable
   private Boolean keyPairEnabled;
 
-  @Name(PROPERTY_PRIVATE_KEY)
-  @Description("Contents of the private key file.")
+  @Name(NAME_PRIVATE_KEY)
   @Macro
   @Nullable
+  @Description("Contents of the private key file.")
   private String privateKey;
 
-  @Name(PROPERTY_PASSPHRASE)
-  @Description("Passphrase for the private key file.")
+  @Name(NAME_PASSPHRASE)
   @Macro
   @Nullable
+  @Description("Passphrase for the private key file.")
   private String passphrase;
 
   @Name(PROPERTY_OAUTH_2_ENABLED)
@@ -247,21 +247,21 @@ public class BaseSnowflakeConfig extends PluginConfig {
           .withConfigProperty(PROPERTY_REFRESH_TOKEN);
       }
     } else if (getKeyPairEnabled()) {
-      if (!containsMacro(PROPERTY_USERNAME)
+      if (!containsMacro(NAME_USERNAME)
         && Strings.isNullOrEmpty(getUsername())) {
         collector.addFailure("Username is not set.", null)
-          .withConfigProperty(PROPERTY_USERNAME);
+          .withConfigProperty(NAME_USERNAME);
       }
-      if (!containsMacro(PROPERTY_PRIVATE_KEY)
+      if (!containsMacro(NAME_PRIVATE_KEY)
         && Strings.isNullOrEmpty(getPrivateKey())) {
         collector.addFailure("Private Key is not set.", null)
-          .withConfigProperty(PROPERTY_PRIVATE_KEY);
+          .withConfigProperty(NAME_PRIVATE_KEY);
       }
     } else {
-      if (!containsMacro(PROPERTY_USERNAME)
+      if (!containsMacro(NAME_USERNAME)
         && Strings.isNullOrEmpty(getUsername())) {
         collector.addFailure("Username is not set.", null)
-          .withConfigProperty(PROPERTY_USERNAME);
+          .withConfigProperty(NAME_USERNAME);
       }
       if (!containsMacro(PROPERTY_PASSWORD)
         && Strings.isNullOrEmpty(getPassword())) {
@@ -272,13 +272,16 @@ public class BaseSnowflakeConfig extends PluginConfig {
     validateConnection(collector);
   }
 
+  /**
+   * Returns true if connection properties don't contain any macros.
+   */
   public boolean canConnect() {
-    return (!containsMacro(PROPERTY_DATABASE) && !containsMacro(PROPERTY_SCHEMA_NAME)
-      && !containsMacro(PROPERTY_ACCOUNT_NAME) && !containsMacro(PROPERTY_USERNAME)
-      && !containsMacro(PROPERTY_PASSWORD) && !containsMacro(PROPERTY_WAREHOUSE)
+    return (!containsMacro(NAME_DATABASE) && !containsMacro(NAME_SCHEMA_NAME)
+      && !containsMacro(NAME_ACCOUNT_NAME) && !containsMacro(NAME_USERNAME)
+      && !containsMacro(PROPERTY_PASSWORD) && !containsMacro(NAME_WAREHOUSE)
       && !containsMacro(PROPERTY_ROLE) && !containsMacro(PROPERTY_CLIENT_ID)
       && !containsMacro(PROPERTY_CLIENT_SECRET) && !containsMacro(PROPERTY_REFRESH_TOKEN)
-      && !containsMacro(PROPERTY_PRIVATE_KEY));
+      && !containsMacro(NAME_PRIVATE_KEY));
   }
 
   protected void validateConnection(FailureCollector collector) {
@@ -294,13 +297,13 @@ public class BaseSnowflakeConfig extends PluginConfig {
 
       ValidationFailure failure = collector.addFailure(
         String.format("There was an issue communicating with Snowflake API: '%s'.", reason), null)
-        .withConfigProperty(PROPERTY_ACCOUNT_NAME)
+        .withConfigProperty(NAME_ACCOUNT_NAME)
         .withConfigProperty(PROPERTY_ROLE)
-        .withConfigProperty(PROPERTY_USERNAME);
+        .withConfigProperty(NAME_USERNAME);
 
       // TODO: for oauth2
       if (keyPairEnabled) {
-        failure.withConfigProperty(PROPERTY_PRIVATE_KEY);
+        failure.withConfigProperty(NAME_PRIVATE_KEY);
       } else {
         failure.withConfigProperty(PROPERTY_PASSWORD);
       }

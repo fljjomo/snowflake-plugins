@@ -15,7 +15,10 @@
  */
 package io.cdap.plugin.snowflake.sink.batch;
 
+
 import io.cdap.cdap.api.annotation.Description;
+import io.cdap.cdap.api.annotation.Metadata;
+import io.cdap.cdap.api.annotation.MetadataProperty;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.annotation.Plugin;
 import io.cdap.cdap.api.data.batch.Output;
@@ -29,6 +32,7 @@ import io.cdap.cdap.etl.api.StageConfigurer;
 import io.cdap.cdap.etl.api.batch.BatchRuntimeContext;
 import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSinkContext;
+import io.cdap.cdap.etl.api.connector.Connector;
 import io.cdap.plugin.common.LineageRecorder;
 import org.apache.hadoop.io.NullWritable;
 import org.slf4j.Logger;
@@ -43,23 +47,27 @@ import java.util.stream.Collectors;
 @Plugin(type = BatchSink.PLUGIN_TYPE)
 @Name(SnowflakeBatchSink.PLUGIN_NAME)
 @Description("Writes records to Snowflake")
+@Metadata(properties = {@MetadataProperty(key = Connector.PLUGIN_TYPE, value = SnowflakeBatchSink.PLUGIN_NAME)})
 public class SnowflakeBatchSink extends BatchSink<StructuredRecord, NullWritable, CSVRecord> {
   private static final Logger LOG = LoggerFactory.getLogger(SnowflakeBatchSink.class);
 
   public static final String PLUGIN_NAME = "Snowflake";
 
-  private final SnowflakeSinkConfig config;
+  private final SnowflakeBatchSinkConfig config;
   private StructuredRecordToCSVRecordTransformer transformer;
 
-  public SnowflakeBatchSink(SnowflakeSinkConfig config) {
+  public SnowflakeBatchSink(SnowflakeBatchSinkConfig config) {
     this.config = config;
   }
 
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
     super.configurePipeline(pipelineConfigurer);
-    StageConfigurer stageConfigurer = pipelineConfigurer.getStageConfigurer();
-    config.validate(stageConfigurer.getInputSchema(), stageConfigurer.getFailureCollector());
+    StageConfigurer configurer = pipelineConfigurer.getStageConfigurer();
+    FailureCollector collector = configurer.getFailureCollector();
+    Schema inputSchema = configurer.getInputSchema();
+
+    config.validate(inputSchema, collector);
   }
 
   @Override

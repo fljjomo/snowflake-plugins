@@ -37,7 +37,7 @@ public class SnowflakeRecordWriter extends RecordWriter<NullWritable, CSVRecord>
 
   private final CSVBuffer csvBuffer;
   private final CSVBuffer csvBufferSizeCheck;
-  private final SnowflakeSinkConfig config;
+  private final SnowflakeBatchSinkConfig config;
   private final SnowflakeSinkAccessor snowflakeAccessor;
   private final String destinationStagePath;
 
@@ -47,7 +47,7 @@ public class SnowflakeRecordWriter extends RecordWriter<NullWritable, CSVRecord>
     String configJson = conf.get(
       SnowflakeOutputFormatProvider.PROPERTY_CONFIG_JSON);
     config = GSON.fromJson(
-      configJson, SnowflakeSinkConfig.class);
+      configJson, SnowflakeBatchSinkConfig.class);
 
     csvBuffer = new CSVBuffer(true);
     csvBufferSizeCheck = new CSVBuffer(false);

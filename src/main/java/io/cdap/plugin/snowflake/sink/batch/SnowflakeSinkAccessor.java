@@ -38,9 +38,9 @@ public class SnowflakeSinkAccessor extends SnowflakeAccessor {
     "SKIP_HEADER = 1) %s";
 
   private static final String DEST_FILE_NAME = "cdapRecords_%s.csv";
-  private final SnowflakeSinkConfig config;
+  private final SnowflakeBatchSinkConfig config;
 
-  public SnowflakeSinkAccessor(SnowflakeSinkConfig config) {
+  public SnowflakeSinkAccessor(SnowflakeBatchSinkConfig config) {
     super(config);
     this.config = config;
   }

@@ -35,7 +35,7 @@ public class SnowflakeOutputFormatProvider implements OutputFormatProvider {
    *
    * @param config Snowflake batch sink configuration
    */
-  public SnowflakeOutputFormatProvider(SnowflakeSinkConfig config) {
+  public SnowflakeOutputFormatProvider(SnowflakeBatchSinkConfig config) {
     this.configMap = new ImmutableMap.Builder<String, String>()
       .put(PROPERTY_CONFIG_JSON, GSON.toJson(config))
       .build();

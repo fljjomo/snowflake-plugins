@@ -16,7 +16,6 @@
 package io.cdap.plugin.snowflake.sink.batch;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -72,8 +71,8 @@ public class SnowflakeOutputFormat extends OutputFormat<NullWritable, CSVRecord>
         Configuration conf = jobContext.getConfiguration();
         String configJson = conf.get(
           SnowflakeOutputFormatProvider.PROPERTY_CONFIG_JSON);
-        SnowflakeSinkConfig config = GSON.fromJson(
-          configJson, SnowflakeSinkConfig.class);
+        SnowflakeBatchSinkConfig config = GSON.fromJson(
+          configJson, SnowflakeBatchSinkConfig.class);
 
         String destinationStagePath = conf.get(DESTINATION_STAGE_PATH_PROPERTY);
 

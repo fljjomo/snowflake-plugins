@@ -20,6 +20,7 @@ import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
 import io.cdap.plugin.snowflake.ValidationAssertions;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.Collections;
 
 /**
@@ -51,7 +52,7 @@ public class SnowflakeBatchSourceConfigTest {
     collector.getValidationFailures().remove(collector.getValidationFailures().size() - 1);
 
     ValidationAssertions.assertValidationFailed(
-      collector, Collections.singletonList(SnowflakeBatchSourceConfig.PROPERTY_USERNAME));
+      collector, Collections.singletonList(SnowflakeBatchSourceConfig.NAME_USERNAME));
   }
 
   @Test

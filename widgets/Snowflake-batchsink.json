@@ -2,6 +2,7 @@
   "metadata": {
     "spec-version": "1.5"
   },
+  "display-name": "Snowflake",
   "configuration-groups": [
     {
       "label": "Basic",
@@ -222,5 +223,12 @@
         }
       ]
     }
-  ]
+  ],
+  "jump-config": {
+    "datasets": [
+      {
+        "ref-property-name": "referenceName"
+      }
+    ]
+  }
 }

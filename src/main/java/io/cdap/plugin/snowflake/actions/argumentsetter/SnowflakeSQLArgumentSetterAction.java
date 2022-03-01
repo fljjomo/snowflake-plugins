@@ -61,13 +61,12 @@ public class SnowflakeSQLArgumentSetterAction extends Action {
     SnowflakeAccessor snowflakeAccessor = new SnowflakeAccessor(config);
     SnowflakeBasicDataSource dataSource = snowflakeAccessor.getDataSource();
 
-    PreparedStatement populateStmt = null;
-    Connection connection =  dataSource.getConnection();
-    ResultSet resultSet = null;
     String query = config.getQuery();
-    try {
-      populateStmt = connection.prepareStatement(query);
-      resultSet = populateStmt.executeQuery();
+    try (Connection connection = dataSource.getConnection()) {
+      LOG.info(String.format("Established connection to %s", config.getAccountName()));
+
+      PreparedStatement populateStmt = connection.prepareStatement(query);
+      ResultSet resultSet = populateStmt.executeQuery();
 
       Map<String, String> argumentsMap = new HashMap<>();
 
@@ -76,7 +75,6 @@ public class SnowflakeSQLArgumentSetterAction extends Action {
         count++;
 
         int columnCount = resultSet.getMetaData().getColumnCount();
-        LOG.trace("Number of columns: " + columnCount);
         if (columnCount < 1) {
           throw new RuntimeException("No columns in result");
         }
@@ -85,7 +83,6 @@ public class SnowflakeSQLArgumentSetterAction extends Action {
           if (columnLabel == null || columnLabel.equalsIgnoreCase("")) {
             throw new RuntimeException("No column name returned");
           }
-          LOG.debug("Column Label: " + columnLabel);
           String value = resultSet.getString(i);
           if (value == null) {
             throw new RuntimeException(String.format("No value was returned for column %s", columnLabel));
@@ -106,16 +103,6 @@ public class SnowflakeSQLArgumentSetterAction extends Action {
       }
     } catch (SQLException e) {
       throw new IOException(String.format("Statement '%s' failed due to '%s'", query, e.getMessage()), e);
-    } finally {
-      if (!resultSet.isClosed()) {
-        resultSet.close();
-      }
-      if (!populateStmt.isClosed()) {
-        populateStmt.close();
-      }
-      if (!connection.isClosed()) {
-        connection.close();
-      }
     }
   }
 

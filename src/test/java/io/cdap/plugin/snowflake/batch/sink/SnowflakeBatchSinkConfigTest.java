@@ -1,11 +1,26 @@
+/*
+ * Copyright © 2020 Cask Data, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package io.cdap.plugin.snowflake.batch.sink;
 
 import io.cdap.cdap.api.macro.Macros;
 import io.cdap.cdap.api.plugin.PluginConfig;
 import io.cdap.cdap.api.plugin.PluginProperties;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
-import io.cdap.plugin.snowflake.common.BaseSnowflakeConfig;
-import io.cdap.plugin.snowflake.sink.batch.SnowflakeSinkConfig;
+import io.cdap.plugin.snowflake.sink.batch.SnowflakeBatchSinkConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
@@ -20,17 +35,17 @@ public class SnowflakeBatchSinkConfigTest {
 
     @Test
     public void testBatchSinkDatabaseMacro() throws Exception {
-        SnowflakeSinkConfig config = new SnowflakeSinkConfig("test", "test",
+        SnowflakeBatchSinkConfig config = new SnowflakeBatchSinkConfig("test", "test",
                 "${database}", "test", "test", "test",
                 null, null, null, null, null, null, null,
         null);
 
         Set<String> macroFields = new HashSet<>();
-        macroFields.add(SnowflakeSinkConfig.PROPERTY_DATABASE);
+        macroFields.add(SnowflakeBatchSinkConfig.NAME_DATABASE);
         Set<String> lookupProperties = new HashSet<>();
         lookupProperties.add("database");
         Map<String, String> properties = new HashMap<>();
-        properties.put(SnowflakeSinkConfig.PROPERTY_DATABASE, "${database}");
+        properties.put(SnowflakeBatchSinkConfig.NAME_DATABASE, "${database}");
         Macros macros = new Macros(lookupProperties, null);
 
         PluginProperties rawProperties = PluginProperties.builder()
@@ -38,7 +53,7 @@ public class SnowflakeBatchSinkConfigTest {
                 .build()
                 .setMacros(macros);
 
-        FieldSetter.setField(config, SnowflakeSinkConfig.class.getDeclaredField("referenceName"), "batch_sink");
+        FieldSetter.setField(config, SnowflakeBatchSinkConfig.class.getDeclaredField("referenceName"), "batch_sink");
         FieldSetter.setField(config, PluginConfig.class.getDeclaredField("rawProperties"), rawProperties);
         FieldSetter.setField(config, PluginConfig.class.getDeclaredField("macroFields"), macroFields);
 

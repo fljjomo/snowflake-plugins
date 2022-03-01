@@ -435,7 +435,6 @@
             </excludes>
           </configuration>
         </plugin>
-        <!--
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
@@ -462,9 +461,9 @@
               </goals>
               <configuration>
                 <excludes>
-                  <exclude>LICENSE*.txt</exclude>-->
+                  <exclude>LICENSE*.txt</exclude>
                   <!-- This file should be not be there, but I am excluding it for now -->
-                  <!--<exclude>*.rst</exclude>
+                  <exclude>*.rst</exclude>
                   <exclude>*.md</exclude>
                   <exclude>**/*.cdap</exclude>
                   <exclude>**/*.yaml</exclude>
@@ -481,18 +480,16 @@
                   <exclude>**/limits.d/**</exclude>
                   <exclude>**/*.json</exclude>
                   <exclude>**/*.json.template</exclude>
-                  <exclude>**/MANIFEST.MF</exclude>-->
+                  <exclude>**/MANIFEST.MF</exclude>
                   <!-- exclude any hack classes -->
-                  <!--<exclude>**/org/apache/hadoop/**</exclude>-->
+                  <exclude>**/org/apache/hadoop/**</exclude>
                   <!-- exclude resource files-->
-                  <!--<exclude>**/resources/**</exclude>
+                  <exclude>**/resources/**</exclude>
                 </excludes>
               </configuration>
             </execution>
           </executions>
         </plugin>
-        -->
-        <!--
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -532,7 +529,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>4.1.0</version>
+          <version>5.1.4</version>
           <extensions>true</extensions>
           <configuration>
             <instructions>
@@ -553,7 +550,6 @@
             </execution>
           </executions>
         </plugin>
-        -->
       </plugins>
     </pluginManagement>
     <plugins>
